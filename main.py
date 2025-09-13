@@ -7,27 +7,35 @@ class TheGame(ShowBase): #Extend Showbase class to create the game class
 
     def __init__(self):         #Initializing class
         ShowBase.__init__(self) #Initializing Showbase Class
-        
         self.loadModels()
         self.setupLights()
-    
+        self.generateTerrain()
+        self.setupCamera()
+
+    #Loop for rendering terrain 20 x 20 x 10
+    def generateTerrain(self):
+        for z in range(10):         #stack of planes / height
+            for y in range(20):     #a plane / width
+                for x in range(20): #a line  / breadth
+                    newBlockNode = render.attachNewNode('new-block-placeholder')
+                    newBlockNode.setPos(
+                        x * 2 - 20,
+                        y * 2 - 20,
+                        -z * 2
+                    )
+                    if z == 0:
+                        self.grassBlock.instanceTo(newBlockNode)
+                    else:
+                        self.dirtBlock.instanceTo(newBlockNode)
+    def setupCamera(self):
+        self.disableMouse()
+        self.camera.setPos(0, 0, 3)
+
     def loadModels(self):
-        
-        self.grassBlock = loader.loadModel('assets/grass-block.glb')
-        self.grassBlock.reparentTo(render) #render is equivalent to document object model, using "reparentTo" on block just attaches it to the screen
-        self.grassBlock.setPos(0,0,0)        
-
-        self.dirtBlock = loader.loadModel('assets/dirt-block.glb')
-        self.dirtBlock.reparentTo(render)
-        self.dirtBlock.setPos(0,2,0)
-
-        self.sandBlock = loader.loadModel('assets/sand-block.glb')
-        self.sandBlock.reparentTo(render)
-        self.sandBlock.setPos(2,0,0)
-
-        self.stoneBlock = loader.loadModel('assets/stone-block.glb')
-        self.stoneBlock.reparentTo(render)
-        self.stoneBlock.setPos(2,2,0)
+        self.grassBlock =   loader.loadModel('assets/grass-block.glb') #loads the model
+        self.dirtBlock  =   loader.loadModel('assets/dirt-block.glb')
+        self.sandBlock  =   loader.loadModel('assets/sand-block.glb')
+        self.stoneBlock =   loader.loadModel('assets/stone-block.glb')
 
     def setupLights(self):
         mainLight = DirectionalLight('Main Light')  #Creates instance from DirectionaLight class called main light
